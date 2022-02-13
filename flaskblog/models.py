@@ -1,4 +1,5 @@
-from flaskblog import db, login_manager
+from flaskblog import db, login_manager, app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
 from flask_login import UserMixin
 
@@ -20,6 +21,20 @@ class User(db.Model, UserMixin):
     # and it can be used to get the User of that post\ lazy bcoz it's taking all the posts made by a single user in
     # one go and it is loading all of them together
 
+    def get_reset_token(self, expires_sec=1800): # these methods are useful for resetting of password by the user
+        s = Serializer(app.config['SECRET_KEY'], expires_sec) # expires_sec is basically validity time of this serializer object
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod  # static method bcoz doesn't depend on object
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+
+        return User.query.get(user_id)
+
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.username}', '{self.email}', '{self.image_file}')"
 
@@ -31,6 +46,7 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                         nullable=False)  # here u is lowercase in user.id bcoz we are referencing the table name and its column
+
     # table name is stored as lowercase by default
 
     def __repr__(self):
