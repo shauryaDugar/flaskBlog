@@ -1,6 +1,4 @@
-from os import abort
-
-from flask import Blueprint, flash, url_for, redirect, render_template, request
+from flask import Blueprint, flash, url_for, redirect, render_template, request, abort
 from flask_login import login_required, current_user
 
 from flaskblog import db
