@@ -6,7 +6,7 @@ import os
 # for the attributes that are sensitive/private like passwords use environment variables and access them with
 # os.environ.get('<variable name>')
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = 'dd863c51abd35bb54c0deaba2688887f'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///db.site'  # the three forward slashes indicate a relative path after
     # which it's the name of our database
     SQLALCHEMY_TRACK_MODIFICATIONS = False
