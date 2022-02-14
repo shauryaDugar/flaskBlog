@@ -1,9 +1,10 @@
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from flaskblog.models import User
 from flask_login import current_user
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, FileField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
+
+from flaskblog.models import User
 
 
 class RegistrationForm(FlaskForm):
@@ -66,12 +67,6 @@ class UpdateAccountForm(FlaskForm):  # creating this form so that users may chan
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Email already exists, choose a new email')
-
-
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
 
 
 class RequestResetForm(FlaskForm):

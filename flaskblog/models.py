@@ -1,7 +1,8 @@
-from flaskblog import db, login_manager, app
+from flaskblog import db, login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
 from flask_login import UserMixin
+from flask import current_app
 
 
 @login_manager.user_loader
@@ -22,12 +23,12 @@ class User(db.Model, UserMixin):
     # one go and it is loading all of them together
 
     def get_reset_token(self, expires_sec=1800): # these methods are useful for resetting of password by the user
-        s = Serializer(app.config['SECRET_KEY'], expires_sec) # expires_sec is basically validity time of this serializer object
+        s = Serializer(current_app.config['SECRET_KEY'], expires_sec) # expires_sec is basically validity time of this serializer object
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod  # static method bcoz doesn't depend on object
     def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        s = Serializer(current_app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
         except:
